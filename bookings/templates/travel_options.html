@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Available Travel Options{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(90deg, #1877f2 0%, #20c6ff 100%); height: 160px;">
+  <div class="container py-4">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-airplane-engines-fill text-white" style="font-size: 2.5rem; margin-right: 10px;"></i>
+      <h2 class="mb-0 fw-bold text-white">Search & Book Your Trip</h2>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="max-width:1100px; margin-top: -75px;">
+  <!-- Search Filter Bar -->
+  <div class="card shadow mb-5 p-4">
+    <form method="get" class="row align-items-end g-3">
+      <div class="col-md-3">
+        <label class="form-label">From</label>
+        <input type="text" name="source" class="form-control" placeholder="City or Airport" value="{{ request.GET.source }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">To</label>
+        <input type="text" name="destination" class="form-control" placeholder="City or Airport" value="{{ request.GET.destination }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Type</label>
+        <select name="type" class="form-select">
+          <option value="">All</option>
+          <option value="Flight" {% if request.GET.type == "Flight" %}selected{% endif %}>Flight</option>
+          <option value="Train" {% if request.GET.type == "Train" %}selected{% endif %}>Train</option>
+          <option value="Bus" {% if request.GET.type == "Bus" %}selected{% endif %}>Bus</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-gradient w-100 fw-bold">SEARCH</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Travel Options Table -->
+  <div class="card card-shadow mb-5 p-0">
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+      {% if travel_options %}
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr class="text-primary text-center">
+            <th>Type</th>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Date & Time</th>
+            <th>Price</th>
+            <th>Available Seats</th>
+            <th>Book</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for option in travel_options %}
+          <tr class="text-center">
+            <td>
+              {% if option.type == "Flight" %}
+                <i class="bi bi-airplane-engines text-info"></i>
+              {% elif option.type == "Train" %}
+                <i class="bi bi-train-front text-success"></i>
+              {% else %}
+                <i class="bi bi-bus-front text-warning"></i>
+              {% endif %}
+              {{ option.type }}
+            </td>
+            <td><strong>{{ option.source }}</strong></td>
+            <td><strong>{{ option.destination }}</strong></td>
+            <td>{{ option.date_time|date:"d M Y, H:i" }}</td>
+            <td><span class="fw-bold text-info">₹{{ option.price }}</span></td>
+            <td>{{ option.available_seats }}</td>
+            <td>
+              <a href="{% url 'book_travel' option.travel_id %}" class="btn btn-gradient btn-sm px-3 fw-semibold">Book</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="p-4 text-center text-muted">No travel options found for your criteria.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="text-center mb-5">
+    <a href="{% url 'travel_options' %}" class="btn btn-outline-secondary px-5 fw-bold">New Search</a>
+  </div>
+</div>
+{% endblock %}

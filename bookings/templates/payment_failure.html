@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Failed{% endblock %}
+
+{% block content %}
+<div class="mx-auto text-center" style="max-width: 600px; padding: 3rem;">
+  <div class="card card-shadow p-5">
+    <h2 class="text-danger fw-bold mb-4"><i class="bi bi-x-circle-fill"></i> Payment Failed</h2>
+    <p class="fs-5 mb-3">Unfortunately, your payment could not be processed.</p>
+    <p>Please try again or contact support if the problem persists.</p>
+    <a href="{% url 'travel_options' %}" class="btn btn-gradient px-5 fw-semibold mt-3">Back to Travel Options</a>
+  </div>
+</div>
+{% endblock %}

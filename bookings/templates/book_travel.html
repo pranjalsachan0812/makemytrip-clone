@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Book Travel - Confirm Booking{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 480px;">
+  <div class="card card-shadow p-4">
+    <h2 class="mb-3 fw-bold text-primary text-center">
+      <i class="bi bi-journal-check"></i> Confirm Booking
+    </h2>
+    <h5 class="card-title mb-3 text-secondary">Travel Details</h5>
+    <ul class="list-group list-group-flush mb-4">
+      <li class="list-group-item">
+        <i class="bi bi-truck-front"></i>
+        <strong class="ms-1">Type:</strong> {{ travel_option.type }}
+      </li>
+      <li class="list-group-item">
+        <i class="bi bi-geo-alt"></i>
+        <strong class="ms-1">From:</strong> {{ travel_option.source }}
+      </li>
+      <li class="list-group-item">
+        <i class="bi bi-geo-alt-fill"></i>
+        <strong class="ms-1">To:</strong> {{ travel_option.destination }}
+      </li>
+      <li class="list-group-item">
+        <i class="bi bi-calendar-event"></i>
+        <strong class="ms-1">Date & Time:</strong> {{ travel_option.date_time|date:"d M Y, H:i" }}
+      </li>
+      <li class="list-group-item">
+        <i class="bi bi-cash-stack"></i>
+        <strong class="ms-1">Price per Seat:</strong> ₹{{ travel_option.price }}
+      </li>
+      <li class="list-group-item">
+        <i class="bi bi-people-fill"></i>
+        <strong class="ms-1">Available Seats:</strong> {{ travel_option.available_seats }}
+      </li>
+    </ul>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.number_of_seats.label_tag }}
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-lines-fill"></i></span>
+          {{ form.number_of_seats }}
+        </div>
+        {% if form.number_of_seats.errors %}
+          <div class="text-danger small">{{ form.number_of_seats.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-gradient btn-lg fw-semibold">Confirm Booking & Pay</button>
+        <a href="{% url 'travel_options' %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

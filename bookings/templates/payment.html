@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Complete Payment{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 480px;">
+  <div class="card card-shadow p-4 text-center">
+    <h2 class="mb-4 fw-bold text-primary">Complete Your Payment</h2>
+    <p class="mb-3">Please pay ₹{{ booking.total_price }} for your booking.</p>
+
+    <button id="rzp-button" class="btn btn-gradient btn-lg fw-semibold px-5">Pay Now</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      const options = {
+        key: "{{ razorpay_key }}",
+        amount: "{{ amount }}", // Amount in paise
+        currency: "INR",
+        name: "TravelBooking",
+        description: "Booking Payment",
+        order_id: "{{ order_id }}",
+        handler: function (response){
+          // Create a form dynamically to POST payment response to server-side verify view
+          const form = document.createElement('form');
+          form.method = "POST";
+          form.action = "{% url 'payment_success' %}";
+
+          const csrfToken = '{{ csrf_token }}';
+          const csrfInput = document.createElement('input');
+          csrfInput.type = 'hidden';
+          csrfInput.name = 'csrfmiddlewaretoken';
+          csrfInput.value = csrfToken;
+          form.appendChild(csrfInput);
+
+          const paymentIdInput = document.createElement('input');
+          paymentIdInput.type = 'hidden';
+          paymentIdInput.name = 'razorpay_payment_id';
+          paymentIdInput.value = response.razorpay_payment_id;
+          form.appendChild(paymentIdInput);
+
+          const orderIdInput = document.createElement('input');
+          orderIdInput.type = 'hidden';
+          orderIdInput.name = 'razorpay_order_id';
+          orderIdInput.value = response.razorpay_order_id;
+          form.appendChild(orderIdInput);
+
+          const signatureInput = document.createElement('input');
+          signatureInput.type = 'hidden';
+          signatureInput.name = 'razorpay_signature';
+          signatureInput.value = response.razorpay_signature;
+          form.appendChild(signatureInput);
+
+          document.body.appendChild(form);
+          form.submit();
+        },
+        prefill: {
+          name: "{{ booking.user.get_full_name }}",
+          email: "{{ booking.user.email }}"
+        },
+        theme: {
+          color: "#3399cc"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      document.getElementById('rzp-button').onclick = function(e){
+        rzp.open();
+        e.preventDefault();
+      };
+    </script>
+  </div>
+</div>
+{% endblock %}
