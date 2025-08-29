@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-56ka+p*wfk63nx_rzi^31ef79k)*$-81dt3#i*r4(8oqb053j=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dotted-banner-470505-s4.el.r.appspot.com', 'localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -132,3 +132,6 @@ load_dotenv()
 
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
